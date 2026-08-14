@@ -1,0 +1,31 @@
+# docker version
+version: '3.8'
+
+# services we want
+services:
+  mongodb:
+    # get the latest version of mongodb
+    image: mongo:latest
+    container_name: coffee_mongo
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo_data:/data/db
+    # always up unless stopped
+    restart: unless-stopped
+
+  redis:
+    # get the lite version of redis
+    image: redis:alpine
+    container_name: coffee_redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    # always up unless stopped
+    restart: unless-stopped
+    
+# after the define, now we run it
+volumes:
+  mongo_data:
+  redis_data:
