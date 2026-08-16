@@ -6,6 +6,8 @@ import ordersRoutes from './routes/orders.routes';
 import reportsRoutes from './routes/reports.routes';
 
 import {connectDB} from './config/db';
+// worker is running in the background 
+import './services/worker.service';
 
 // get the vars from env to the server
 dotenv.config();

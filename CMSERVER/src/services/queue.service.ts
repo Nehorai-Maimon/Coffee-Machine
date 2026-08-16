@@ -5,7 +5,11 @@ import dotenv from 'dotenv';
 dotenv.config();
 
 // connect to Redis
-const connection = new IORedis(process.env.REDIS_URI || 'redis://localhost:6379');
+const connection = new IORedis({
+    host: 'localhost',
+    port: 6379,
+    maxRetriesPerRequest: null
+});
 
 // create queue
 export const coffeeQueue = new Queue('coffeeQueue',{connection});
