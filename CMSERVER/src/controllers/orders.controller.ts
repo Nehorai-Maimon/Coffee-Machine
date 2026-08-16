@@ -1,5 +1,6 @@
 import {Request, Response} from 'express';
 import Order from '../models/Orders';
+import { addOrderToQueue} from '../services/queue.service';
 
 export const createOrder = async (req: Request, res: Response)=>{
     try{
@@ -27,6 +28,9 @@ export const createOrder = async (req: Request, res: Response)=>{
         
         // save the order in DB
         await newOrder.save();
+
+        //enter to the queue
+        await addOrderToQueue(newOrder._id.toString(), newOrder.title,newOrder.delayMinutes);
 
         res.status(201).json({
             message: 'Order saved to database successfully!',
