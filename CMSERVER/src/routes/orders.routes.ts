@@ -1,5 +1,5 @@
 import {Router, Request,Response} from 'express';
-import {createOrder, getOrders} from '../controllers/orders.controller';
+import {createOrder, getOrders} from '../logics/orders.logic';
 
 const router = Router();
 

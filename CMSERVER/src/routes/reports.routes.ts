@@ -1,5 +1,5 @@
 import { Router, Request, Response } from 'express';
-import {getMonthlyReport,getHistogramData} from '../controllers/reports.controller'
+import {getMonthlyReport,getHistogramData} from '../logics/reports.logic'
 
 const router = Router();
 

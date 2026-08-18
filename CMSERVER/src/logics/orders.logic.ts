@@ -1,42 +1,50 @@
 import {Request, Response} from 'express';
 import Order from '../models/Orders';
 import { addOrderToQueue} from '../services/queue.service';
+import dotenv from 'dotenv'
+import {create, readAll} from '../controllers/orders.controllers';
+
+dotenv.config()
 
 // create order
-export const createOrder = async (req: Request, res: Response)=>{
+const createOrder = async (req: Request, res: Response)=>{
     try{
-        // extract the validation details from the request
+        // extract the details from the request
         const {name, title,delayMinutes, password} = req.body;
-        
+      
+        // validation
         if(!name || !title){
             res.status(400).json({error: 'Name and title are required'});
             return;
         }
-
-        if(title == 'Boss'){
-            if(password !== 'boss123'){
+        
+        if (title != 'Boss' &&  title != 'Employee'){
+                res.status(401).json({error: 'Invalid title'});
+                return;
+            }
+        
+        if(title == 'Boss')
+            if(password !== process.env.PASS){
                 res.status(401).json({error: 'Invalid boss password'});
                 return;
             }
-        }
 
-        // create the order
-        const newOrder = new Order({
+        if(delayMinutes < 0){
+                res.status(401).json({error: 'Invalid delay time'});
+                return;
+            }
+        
+        const newOrder = await create({
             name,
             title,
             delayMinutes: delayMinutes||0
-        });
-        
-        // save the order in DB
-        await newOrder.save();
-
-        //enter to the queue
-        await addOrderToQueue(newOrder._id.toString(), newOrder.title,newOrder.delayMinutes);
+        })
 
         res.status(201).json({
             message: 'Order saved to database successfully!',
             order: newOrder
         });
+
     } catch(error){
         console.log(`[controller]: Error creating order - ${(error as Error).message}`);
         res.status(500).json({error: 'Server error while creating order'});
@@ -44,9 +52,9 @@ export const createOrder = async (req: Request, res: Response)=>{
 };
 
 // get all orders
-export const getOrders = async (req: Request, res:Response)=>{
+const getOrders = async (req: Request, res:Response)=>{
     try{
-        const  orders = await Order.find().sort({createdAt: -1});
+        const orders = await readAll();
 
         res.status(200).json(orders);
     }catch(error){
@@ -54,3 +62,5 @@ export const getOrders = async (req: Request, res:Response)=>{
         res.status(500).json({error: 'Server error while fetching orders'});
     }
 };
+
+export {createOrder ,getOrders}; 

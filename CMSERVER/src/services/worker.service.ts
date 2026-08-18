@@ -12,13 +12,17 @@ const connection = new IORedis({
     maxRetriesPerRequest:null
 });
     
+const sleep = (ms:number)=> new Promise(resolve=> setTimeout(resolve, ms));
+
 export const coffeeWorker = new Worker(
     'coffeeQueue', //name
     async (job: Job)=>{
         const {orderId} = job.data;
-        console.log(`[Worker]: Started processing order ${orderId}...`);
+        console.log(`[Worker]: Started processing order ${orderId}... wait 5 seconds`);
 
         try{
+            await sleep(5000);
+            
             await Order.findByIdAndUpdate(orderId,{
                 done: true,
                 status: 'ready'

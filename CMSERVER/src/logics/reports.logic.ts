@@ -1,7 +1,7 @@
 import {Request,Response} from 'express';
 import Order from '../models/Orders';
 
-// GET orders by month
+// GET monthly report
 export const getMonthlyReport = async (req:Request,res:Response)=>{
     try{
         const {month,year} = req.query;
@@ -41,8 +41,8 @@ export const getHistogramData = async (req:Request, res:Response)=>{
             }
         ]);
 
-        const  labels = aggregatedData.map(item => item._id);
-        const  data = aggregatedData.map(item => item.count);
+        const labels = aggregatedData.map(item => item._id);
+        const data = aggregatedData.map(item => item.count);
 
         res.status(200).json({labels,data});
     }catch(error){
