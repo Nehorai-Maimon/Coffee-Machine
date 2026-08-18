@@ -1,6 +1,4 @@
 import {Request, Response} from 'express';
-import Order from '../models/Orders';
-import { addOrderToQueue} from '../services/queue.service';
 import dotenv from 'dotenv'
 import {create, readAll} from '../controllers/orders.controllers';
 

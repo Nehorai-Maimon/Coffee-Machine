@@ -17,7 +17,29 @@ const create = async(orderData: OrderData)=>{
     return newOrder;
 } 
 
-const readAll = async()=> await Order.find().sort({createdAt: -1});
+const readAll = async ()=> await Order.find().sort({createdAt: -1});
 
+const readMonthReport = async (startDate: Date,endDate:Date)=>{
+    return await Order.find({
+                createdAt:{
+                    $gte:startDate,
+                    $lt: endDate
+                }
+            });
+}
 
-export {create, readAll};
+const readHistogramData = async ()=> {
+    return await Order.aggregate([
+            {
+                $group:{
+                    _id: '$name', //aggrigation by name filed
+                    count: {$sum:1} // add 1 for every item
+                }
+            },
+            {
+                $sort: {count: -1} // from high to low
+            }
+        ]);
+}
+
+export {create, readAll,readMonthReport,readHistogramData};
