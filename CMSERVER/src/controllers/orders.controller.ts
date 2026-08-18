@@ -2,6 +2,7 @@ import {Request, Response} from 'express';
 import Order from '../models/Orders';
 import { addOrderToQueue} from '../services/queue.service';
 
+// create order
 export const createOrder = async (req: Request, res: Response)=>{
     try{
         // extract the validation details from the request
@@ -39,5 +40,17 @@ export const createOrder = async (req: Request, res: Response)=>{
     } catch(error){
         console.log(`[controller]: Error creating order - ${(error as Error).message}`);
         res.status(500).json({error: 'Server error while creating order'});
+    }
+};
+
+// get all orders
+export const getOrders = async (req: Request, res:Response)=>{
+    try{
+        const  orders = await Order.find().sort({createdAt: -1});
+
+        res.status(200).json(orders);
+    }catch(error){
+        console.error(`[controller]: Error fetching orders- ${(error as Error).message}`);
+        res.status(500).json({error: 'Server error while fetching orders'});
     }
 };
