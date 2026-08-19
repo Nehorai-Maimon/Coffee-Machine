@@ -14,7 +14,6 @@ interface IOrder {
 }
 
 export default function OrdersPage() {
-  // form fields
   const [name, setName] = useState('');
   const [title, setTitle] = useState<'Employee' | 'Boss'>('Employee');
   const [password, setPassword] = useState('');
@@ -25,7 +24,6 @@ export default function OrdersPage() {
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState('');
 
-  // GET all orders
   const fetchOrders = async () => {
     try {
       const response = await api.get<IOrder[]>('/orders');
@@ -35,7 +33,6 @@ export default function OrdersPage() {
     }
   };
 
-  // fetch every 3 seconds
   useEffect(() => {
     fetchOrders();
     const interval = setInterval(fetchOrders, 3000);
@@ -52,47 +49,73 @@ export default function OrdersPage() {
         name,
         title,
         password: title === 'Boss' ? password : undefined,
-        delayMinutes: timePreference === "Now"? 0 : Number(delayMinutes)
+        delayMinutes: timePreference === "Now" ? 0 : Number(delayMinutes)
       });
 
-      setMessage('✅ ההזמנה נשלחה בהצלחה לתור!');
+      setMessage('✅ Order successfully added to the queue!');
+      
       setName('');
       setPassword('');
       setDelayMinutes('');
       setTimePreference('Now');
-      fetchOrders(); // רענון מיידי של הרשימה
+      fetchOrders(); 
     } catch (err: any) {
-      setMessage(`❌ שגיאה: ${err.response?.data?.error || 'שליחת ההזמנה נכשלה'}`);
+      setMessage(`❌ Error: ${err.response?.data?.error || 'Failed to submit order'}`);
     } finally {
       setLoading(false);
     }
   };
 
-  return (
-    <div style={{ maxWidth: '800px', margin: '0 auto', padding: '20px', fontFamily: 'Arial, sans-serif' }}>
-      <h1>Coffee Machine ☕</h1>
+  const inputStyle: React.CSSProperties = {
+    width: '100%', 
+    padding: '10px 12px', 
+    borderRadius: '6px', 
+    border: '1px solid #cbd5e1',
+    fontSize: '1rem',
+    boxSizing: 'border-box',
+    outline: 'none'
+  };
 
-      {/* טופס הזמנה */}
-      <section style={{ background: '#f4f4f5', padding: '20px', borderRadius: '8px', marginBottom: '30px' }}>
-        <h3>הזמן קפה חדש</h3>
-        <form onSubmit={handleSubmit} style={{ display: 'grid', gap: '15px' }}>
+  const labelStyle: React.CSSProperties = {
+    display: 'block', 
+    marginBottom: '6px', 
+    fontWeight: 'bold',
+    color: '#334155'
+  };
+
+  return (
+    /* כאן שינינו את רוחב העמוד המקסימלי מ-850 ל-600 */
+    <div style={{ maxWidth: '600px', margin: '0 auto', padding: '20px', fontFamily: 'Arial, sans-serif', color: '#0f172a' }}>
+      <h1 style={{ textAlign: 'center', color: '#0369a1', marginBottom: '30px' }}>Coffee Machine ☕</h1>
+
+      <section style={{ 
+        background: 'white', 
+        padding: '30px', 
+        borderRadius: '12px', 
+        boxShadow: '0 4px 6px rgba(0,0,0,0.05), 0 1px 3px rgba(0,0,0,0.1)', 
+        marginBottom: '40px' 
+      }}>
+        <h3 style={{ marginTop: 0, color: '#1e293b', borderBottom: '2px solid #f1f5f9', paddingBottom: '10px' }}>
+          Place a New Coffee Order
+        </h3>
+        
+        <form onSubmit={handleSubmit} style={{ display: 'grid', gap: '20px', marginTop: '20px' }}>
           <div>
-            <label style={{ display: 'block', marginBottom: '5px' }}>שם: </label>
+            <label style={labelStyle}>Name:</label>
             <input 
               type="text" 
               value={name} 
               onChange={(e) => setName(e.target.value)} 
               required 
-              placeholder="שם המזמין"
-              style={{ width: '100%', padding: '8px' }}
+              placeholder="Enter your name"
+              style={inputStyle}
             />
           </div>
 
-          {/* תוקן ל-Radio Buttons */}
           <div>
-            <label style={{ display: 'block', marginBottom: '5px' }}>תפקיד: </label>
-            <div style={{ display: 'flex', gap: '15px' }}>
-              <label>
+            <label style={labelStyle}>Role:</label>
+            <div style={{ display: 'flex', gap: '20px', background: '#f8fafc', padding: '10px', borderRadius: '6px', border: '1px solid #e2e8f0' }}>
+              <label style={{ cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '8px' }}>
                 <input 
                   type="radio" 
                   value="Employee" 
@@ -101,37 +124,36 @@ export default function OrdersPage() {
                 />
                 Employee
               </label>
-              <label>
+              <label style={{ cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '8px', fontWeight: title === 'Boss' ? 'bold' : 'normal' }}>
                 <input 
                   type="radio" 
                   value="Boss" 
                   checked={title === 'Boss'} 
                   onChange={() => setTitle('Boss')} 
                 />
-                Boss
+                Boss 👑
               </label>
             </div>
           </div>
 
           {title === 'Boss' && (
             <div>
-              <label style={{ display: 'block', marginBottom: '5px' }}>סיסמת מנהל: </label>
+              <label style={labelStyle}>Manager Password:</label>
               <input 
                 type="password" 
                 value={password} 
                 onChange={(e) => setPassword(e.target.value)} 
                 required 
-                placeholder="הזן סיסמת בוס"
-                style={{ width: '100%', padding: '8px' }}
+                placeholder="Enter boss password"
+                style={inputStyle}
               />
             </div>
           )}
 
-          {/* חדש: בחירת זמן קפה עם Radio Buttons */}
           <div>
-            <label style={{ display: 'block', marginBottom: '5px' }}>זמן הכנה: </label>
-            <div style={{ display: 'flex', gap: '15px' }}>
-              <label>
+            <label style={labelStyle}>Preparation Time:</label>
+            <div style={{ display: 'flex', gap: '20px', background: '#f8fafc', padding: '10px', borderRadius: '6px', border: '1px solid #e2e8f0' }}>
+              <label style={{ cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '8px' }}>
                 <input 
                   type="radio" 
                   value="Now" 
@@ -140,7 +162,7 @@ export default function OrdersPage() {
                 />
                 Now
               </label>
-              <label>
+              <label style={{ cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '8px' }}>
                 <input 
                   type="radio" 
                   value="Later" 
@@ -152,18 +174,17 @@ export default function OrdersPage() {
             </div>
           </div>
 
-          {/* תוקן: מופיע רק אם נבחר Later, עם מינימום 1 וחובה */}
           {timePreference === 'Later' && (
             <div>
-              <label style={{ display: 'block', marginBottom: '5px' }}>השהייה (דקות): </label>
+              <label style={labelStyle}>Delay (minutes):</label>
               <input 
                 type="number" 
                 min="1" 
                 required
                 value={delayMinutes} 
                 onChange={(e) => setDelayMinutes(Number(e.target.value))} 
-                placeholder="הזן מספר דקות"
-                style={{ width: '100%', padding: '8px' }}
+                placeholder="Enter delay in minutes"
+                style={inputStyle}
               />
             </div>
           )}
@@ -171,47 +192,87 @@ export default function OrdersPage() {
           <button 
             type="submit" 
             disabled={loading}
-            style={{ padding: '10px', background: '#3b82f6', color: 'white', border: 'none', borderRadius: '4px', cursor: 'pointer', marginTop: '10px' }}
+            style={{ 
+              padding: '12px', 
+              background: loading ? '#94a3b8' : '#3b82f6', 
+              color: 'white', 
+              border: 'none', 
+              borderRadius: '6px', 
+              cursor: loading ? 'not-allowed' : 'pointer', 
+              marginTop: '10px',
+              fontSize: '1rem',
+              fontWeight: 'bold',
+              transition: 'background 0.2s'
+            }}
           >
-            {loading ? 'שולח...' : 'שלח הזמנה'}
+            {loading ? 'Submitting...' : 'Submit Order'}
           </button>
         </form>
 
-        {message && <p style={{ marginTop: '15px', fontWeight: 'bold' }}>{message}</p>}
+        {message && (
+          <div style={{ 
+            marginTop: '20px', 
+            padding: '12px', 
+            borderRadius: '6px', 
+            background: message.includes('✅') ? '#dcfce7' : '#fee2e2',
+            color: message.includes('✅') ? '#166534' : '#991b1b',
+            fontWeight: 'bold',
+            border: `1px solid ${message.includes('✅') ? '#bbf7d0' : '#fecaca'}`
+          }}>
+            {message}
+          </div>
+        )}
       </section>
 
-      {/* רשימת ההזמנות החיה */}
-      <section>
-        <h3>תור והיסטוריית הזמנות</h3>
-        <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'left' }}>
-          <thead>
-            <tr style={{ borderBottom: '2px solid #ddd', background: '#f9fafb' }}>
-              <th style={{ padding: '8px' }}>שם</th>
-              <th style={{ padding: '8px' }}>תפקיד</th>
-              <th style={{ padding: '8px' }}>סטטוס</th>
-            </tr>
-          </thead>
-          <tbody>
-            {orders.map((order) => (
-              <tr key={order._id} style={{ borderBottom: '1px solid #eee' }}>
-                <td style={{ padding: '8px' }}>{order.name}</td>
-                <td style={{ padding: '8px' }}>{order.title === 'Boss' ? '👑 Boss' : 'Employee'}</td>
-                <td style={{ padding: '8px' }}>
-                  <span style={{
-                    padding: '4px 8px',
-                    borderRadius: '4px',
-                    fontSize: '12px',
-                    fontWeight: 'bold',
-                    background: order.status === 'ready' ? '#dcfce7' : '#fef3c7',
-                    color: order.status === 'ready' ? '#15803d' : '#b45309'
-                  }}>
-                    {order.status === 'ready' ? '✅ Ready' : '⏳ Pending'}
-                  </span>
-                </td>
+      <section style={{ 
+        background: 'white', 
+        padding: '30px', 
+        borderRadius: '12px', 
+        boxShadow: '0 4px 6px rgba(0,0,0,0.05), 0 1px 3px rgba(0,0,0,0.1)' 
+      }}>
+        <h3 style={{ marginTop: 0, color: '#1e293b', borderBottom: '2px solid #f1f5f9', paddingBottom: '10px', marginBottom: '20px' }}>
+          Queue & Order History
+        </h3>
+        
+        <div style={{ overflowX: 'auto' }}>
+          <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'center' }}>
+            <thead>
+              <tr style={{ background: '#f8fafc', borderBottom: '2px solid #e2e8f0' }}>
+                <th style={{ padding: '12px', color: '#475569' }}>Name</th>
+                <th style={{ padding: '12px', color: '#475569' }}>Role</th>
+                <th style={{ padding: '12px', color: '#475569' }}>Status</th>
               </tr>
-            ))}
-          </tbody>
-        </table>
+            </thead>
+            <tbody>
+              {orders.length > 0 ? orders.map((order) => (
+                <tr key={order._id} style={{ borderBottom: '1px solid #f1f5f9' }}>
+                  <td style={{ padding: '12px', fontWeight: '500' }}>{order.name}</td>
+                  <td style={{ padding: '12px' }}>{order.title === 'Boss' ? '👑 Boss' : 'Employee'}</td>
+                  <td style={{ padding: '12px' }}>
+                    <span style={{
+                      padding: '6px 10px',
+                      borderRadius: '20px',
+                      fontSize: '0.75rem',
+                      fontWeight: 'bold',
+                      textTransform: 'uppercase',
+                      letterSpacing: '0.05em',
+                      background: order.status === 'ready' ? '#dcfce7' : '#fef3c7',
+                      color: order.status === 'ready' ? '#15803d' : '#b45309'
+                    }}>
+                      {order.status === 'ready' ? '✅ Ready' : '⏳ Pending'}
+                    </span>
+                  </td>
+                </tr>
+              )) : (
+                <tr>
+                  <td colSpan={3} style={{ padding: '20px', textAlign: 'center', color: '#94a3b8' }}>
+                    No orders in the queue yet.
+                  </td>
+                </tr>
+              )}
+            </tbody>
+          </table>
+        </div>
       </section>
     </div>
   );

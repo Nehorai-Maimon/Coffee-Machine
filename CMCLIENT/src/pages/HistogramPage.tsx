@@ -22,9 +22,6 @@ ChartJS.register(
 
 export default function HistogramPage() {
   const [chartData, setChartData] = useState<any>(null);
-  
-  // הסטייט החדש שאחראי על הפעלת האנימציה מחדש
-  const [chartKey, setChartKey] = useState(0);
 
   const fetchHistogram = async () => {
     try {
@@ -52,33 +49,33 @@ export default function HistogramPage() {
     fetchHistogram();
   }, []);
 
-  // הפונקציה שמופעלת בלחיצה על הכפתור
-  const handleReload = () => {
-    setChartKey(prev => prev + 1); // שינוי המפתח מכריח את הגרף להצטייר מחדש
-    fetchHistogram();
+  const handleReload = async () => {
+    setChartData(null); 
+    await fetchHistogram();
   };
 
   return (
     <div
       style={{
-        maxWidth: "800px",
+        maxWidth: "600px", 
         margin: "0 auto",
         padding: "20px",
         fontFamily: "Arial, sans-serif",
       }}
     >
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
-        <h1 style={{ margin: 0 }}>Orders Histogram 📊</h1>
+        <h1 style={{ margin: 0, color: '#0369a1' }}>Orders Histogram 📊</h1>
         <button 
           onClick={handleReload}
           style={{ 
             padding: '8px 16px', 
-            background: '#3b82f6', 
+            background: '#10b981',
             color: 'white', 
             border: 'none', 
-            borderRadius: '4px', 
+            borderRadius: '6px', 
             cursor: 'pointer',
-            fontWeight: 'bold'
+            fontWeight: 'bold',
+            transition: 'background 0.2s'
           }}
         >
           🔄 Reload Data
@@ -87,16 +84,19 @@ export default function HistogramPage() {
 
       <section
         style={{
-          background: "#f4f4f5",
-          padding: "20px",
-          borderRadius: "8px",
+          background: "white",
+          padding: "30px",
+          borderRadius: "12px",
+          boxShadow: "0 4px 6px rgba(0,0,0,0.05), 0 1px 3px rgba(0,0,0,0.1)",
           marginBottom: "30px",
         }}
       >
-        <h3>Employee Orders Histogram</h3>
+        <h3 style={{ marginTop: 0, color: '#1e293b', borderBottom: '2px solid #f1f5f9', paddingBottom: '10px' }}>
+          Employee Orders Histogram
+        </h3>
+        
         {chartData ? (
           <Bar
-            key={chartKey} /* הוספנו את המפתח לכאן */
             data={chartData}
             options={{
               responsive: true,
@@ -110,7 +110,9 @@ export default function HistogramPage() {
             }}
           />
         ) : (
-          <p>Loading data...</p>
+          <p style={{ textAlign: 'center', color: '#64748b', padding: '40px 0' }}>
+            Loading data...
+          </p>
         )}
       </section>
     </div>
