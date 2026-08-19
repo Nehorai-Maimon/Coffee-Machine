@@ -46,6 +46,9 @@ services:
       - "5173:5173"
     depends_on:
       - backend
+    volumes:
+     - ./CMCLIENT:/app 
+     - /app/node_modules
           
 # after the define, now we run it
 volumes:

@@ -75,7 +75,7 @@ export default function ReportsPage() {
     <div style={{ maxWidth: '800px', margin: '0 auto', padding: '20px', fontFamily: 'Arial, sans-serif' }}>
       <h1>Manager Reports 📊</h1>
 
-      <section style={{ background: '#f4f4f5', padding: '20px', borderRadius: '8px', marginBottom: '30px' }}>
+      {/* <section style={{ background: '#f4f4f5', padding: '20px', borderRadius: '8px', marginBottom: '30px' }}>
         <h3>היסטוגרמת הזמנות לעובד</h3>
         {chartData ? (
           <Bar 
@@ -94,7 +94,7 @@ export default function ReportsPage() {
         ) : (
           <p>טוען נתונים...</p>
         )}
-      </section>
+      </section> */}
 
       <section style={{ background: '#f4f4f5', padding: '20px', borderRadius: '8px' }}>
         <h3>הורדת דוח חודשי (Excel)</h3>
