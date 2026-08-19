@@ -1,7 +1,7 @@
 import {Worker, Job} from 'bullmq';
 import IORedis from 'ioredis';
-import Order from '../models/Orders';
 import dotenv from 'dotenv';
+import {update} from '../controllers/orders.controllers';
 
 dotenv.config();
 
@@ -21,9 +21,13 @@ export const coffeeWorker = new Worker(
         console.log(`[Worker]: Started processing order ${orderId}... wait 5 seconds`);
 
         try{
+            //change status to 'preparing'
+            await update(orderId,{status: 'preparing'});
+            console.log(`[Worker]: status has been changed to preparing`);
+
             await sleep(5000);
             
-            await Order.findByIdAndUpdate(orderId,{
+            await update(orderId,{
                 done: true,
                 status: 'ready'
             });

@@ -35,7 +35,7 @@ export default function OrdersPage() {
 
   useEffect(() => {
     fetchOrders();
-    const interval = setInterval(fetchOrders, 3000);
+    const interval = setInterval(fetchOrders, 1000);
     return () => clearInterval(interval);
   }, []);
 
@@ -84,7 +84,6 @@ export default function OrdersPage() {
   };
 
   return (
-    /* כאן שינינו את רוחב העמוד המקסימלי מ-850 ל-600 */
     <div style={{ maxWidth: '600px', margin: '0 auto', padding: '20px', fontFamily: 'Arial, sans-serif', color: '#0f172a' }}>
       <h1 style={{ textAlign: 'center', color: '#0369a1', marginBottom: '30px' }}>Coffee Machine ☕</h1>
 
@@ -256,10 +255,10 @@ export default function OrdersPage() {
                       fontWeight: 'bold',
                       textTransform: 'uppercase',
                       letterSpacing: '0.05em',
-                      background: order.status === 'ready' ? '#dcfce7' : '#fef3c7',
-                      color: order.status === 'ready' ? '#15803d' : '#b45309'
+                      background: order.status === 'ready' ? '#dcfce7' : order.status === 'preparing' ? '#e0e7ff' : '#fef3c7',
+                      color: order.status === 'ready' ? '#15803d' : order.status === 'preparing' ? '#4338ca' : '#b45309'
                     }}>
-                      {order.status === 'ready' ? '✅ Ready' : '⏳ Pending'}
+                      {order.status === 'ready' ? '✅ Ready' : order.status === 'preparing' ? '⚙️ Preparing' : '⏳ Pending'}
                     </span>
                   </td>
                 </tr>

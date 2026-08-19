@@ -1,6 +1,6 @@
 import mongoose,{Schema,Document} from 'mongoose';
 
-// define types
+// define types for ts
 export interface IOrder extends Document{
     name: string;
     title: 'Employee' | 'Boss';
@@ -27,7 +27,7 @@ const OrderSchema : Schema = new Schema(
             required: true
         },
         done:{
-            type: Number,
+            type: Boolean,
             default: false
         },
         status:{
