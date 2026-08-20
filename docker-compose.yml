@@ -35,6 +35,10 @@ services:
     depends_on:
       - mongodb
       - redis
+    volumes:
+      - ./CMSERVER:/app             
+      - /app/node_modules          
+    command: npm run dev            
 
   frontend:
     build: ./CMCLIENT

@@ -8,7 +8,7 @@ function App() {
   const navLinkStyle = ({ isActive }: { isActive: boolean }) => ({
     textDecoration: 'none',
     padding: '10px 20px',
-    margin: '0 10px', // מרווח סימטרי מכל צד כדי לשמור על מרכוז מושלם
+    margin: '0 10px', 
     borderRadius: '8px',
     fontWeight: 'bold',
     color: isActive ? '#ffffff' : '#4b5563',

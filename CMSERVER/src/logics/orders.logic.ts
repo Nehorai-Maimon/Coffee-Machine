@@ -9,7 +9,6 @@ const createOrder = async (req: Request, res: Response) => {
   try {
     // extract the details from the request
     const { name, title, delayMinutes, password } = req.body;
-
     // validation
     if (!name || !title) {
       res.status(400).json({ error: "Name and title are required" });
